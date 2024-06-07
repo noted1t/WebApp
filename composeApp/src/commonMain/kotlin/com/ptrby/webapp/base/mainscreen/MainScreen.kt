@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 //Компонент, представляющий главный экран приложения. Отображает список дел и панель управления.
@@ -103,11 +104,14 @@ fun MainScreen() {
             onConfirm = { authLogin, authPassword ->
                 coroutine.launch {
                     val status = vm.logging(authLogin, authPassword)
-                    if (!status) {
+                    if (! status) {
                         isError = true
                     }
+                    delay(5_000)
+                    isError = false
                 }
             },
+
             isError = isError,
             clearError = {
                 isError = false
@@ -121,7 +125,7 @@ fun MainScreen() {
 fun TaskCard(
     task: Task,
     isLoggedIn: Boolean,
-    onDeleteClick: () -> Unit,
+    onDeleteClick: (Int) -> Unit,
     onEditClick: (Task) -> Unit
 ) {
     var editOpened by remember { mutableStateOf(false) }
@@ -156,7 +160,7 @@ fun TaskCard(
                     }) {
                         Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
-                    IconButton(onClick = onDeleteClick) {
+                    IconButton(onClick = { onDeleteClick(task.id) }) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete")
                     }
                 }

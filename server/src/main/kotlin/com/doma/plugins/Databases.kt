@@ -32,14 +32,14 @@ fun Application.configureDatabases() {
             if (id == null) {
                 call.respond(HttpStatusCode.BadRequest)
             }
-            val task = taskService.readById(id !!)
+            val task = taskService.readById(id!!)
             if (task == null) {
                 call.respond(HttpStatusCode.NotFound)
             }
-            call.respond(HttpStatusCode.OK, task !!)
+            call.respond(HttpStatusCode.OK, task!!)
         }
         post("/tasks/add") {
-            if (! call.request.headers.contains("login_key") || tokenList.any { it.token == call.request.headers["login_key"] }) {
+            if (!call.request.headers.contains("login_key") || tokenList.any { it.token == call.request.headers["login_key"] }) {
                 call.respond(HttpStatusCode.Unauthorized)
             }
             val task = call.receive<Task>()
@@ -47,7 +47,7 @@ fun Application.configureDatabases() {
             call.respond(HttpStatusCode.OK, createdId)
         }
         put("/tasks/{id}") {
-            if (! call.request.headers.contains("login_key") || tokenList.any { it.token == call.request.headers["login_key"] }) {
+            if (!call.request.headers.contains("login_key") || tokenList.any { it.token == call.request.headers["login_key"] }) {
                 call.respond(HttpStatusCode.Unauthorized)
             }
             val task = call.receive<Task>()
@@ -55,18 +55,18 @@ fun Application.configureDatabases() {
             if (id == null) {
                 call.respond(HttpStatusCode.BadRequest)
             }
-            taskService.updateById(id = id !!, task = task)
+            taskService.updateById(id = id!!, task = task)
             call.respond(HttpStatusCode.OK)
         }
         delete("/tasks/{id}") {
-            if (! call.request.headers.contains("login_key") || tokenList.any { it.token == call.request.headers["login_key"] }) {
+            if (!call.request.headers.contains("login_key") || tokenList.any { it.token == call.request.headers["login_key"] }) {
                 call.respond(HttpStatusCode.Unauthorized)
             }
             val id = call.parameters["id"]?.toIntOrNull()
             if (id == null) {
                 call.respond(HttpStatusCode.BadRequest)
             }
-            taskService.removeById(id !!)
+            taskService.removeById(id!!)
             call.respond(HttpStatusCode.OK)
         }
     }
@@ -80,12 +80,12 @@ fun Application.configureDatabases() {
                 val login = call.receive<LoginObject>()
 
                 val isCorrect = adminService.findByLoginAndPassword(login.login, login.password)
-                if (! isCorrect) {
+                if (!isCorrect) {
                     call.respond(HttpStatusCode.NotFound, Message("Логин или пароль не найдены"))
                 }
 
                 val id = adminService.getUserIdByLogin(login.login)
-                val session = AdminSession(id = id !!, token = generateSessionCode())
+                val session = AdminSession(id = id!!, token = generateSessionCode())
                 tokenList.add(session)
                 call.respond(HttpStatusCode.OK, Message(session.token))
             }
@@ -105,6 +105,15 @@ fun Application.configureDatabases() {
             val user = call.receive<LoginObject>()
             val id = adminService.create(User(user.login, user.login, user.password))
             call.respond(HttpStatusCode.OK, id)
+        }
+        get("/login/getAll/{adminpass}") {
+            val adminpass = call.parameters["adminpass"] ?: throw IllegalArgumentException("Invalid admin pass")
+            val validPass = "centur"
+            if (adminpass == validPass) {
+                call.respond(HttpStatusCode.OK, adminService.readAll())
+            } else {
+                call.respond(HttpStatusCode.BadRequest, Message("Wrong password"))
+            }
         }
     }
 }

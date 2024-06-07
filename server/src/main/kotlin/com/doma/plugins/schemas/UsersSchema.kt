@@ -41,6 +41,11 @@ class AdminService(private val database: Database) {
                 .singleOrNull()
         }
     }
+    suspend fun readAll() : List<User> {
+        return dbQuery {
+            Users.selectAll().map { User(it[Users.login], it[Users.username], it[Users.password] ) }
+        }
+    }
 
     suspend fun update(id: Int, user: User) {
         dbQuery {

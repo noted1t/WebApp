@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -61,6 +62,13 @@ fun MainScreen() {
                             }
                         )
                     }
+                    IconButton(
+                        onClick = {
+                            expandedState = true
+                        }
+                    ) {
+                        Icon(Icons.Default.Menu, "Открыть выпадающее меню")
+                    }
                 }
             )
         }
@@ -95,7 +103,7 @@ fun MainScreen() {
             onConfirm = { authLogin, authPassword ->
                 coroutine.launch {
                     val status = vm.logging(authLogin, authPassword)
-                    if (! status) {
+                    if (!status) {
                         isError = true
                     }
                 }
@@ -107,6 +115,7 @@ fun MainScreen() {
         )
     }
 }
+
 //Компонент, отображающий карточку дела. Позволяет редактировать и удалять задачи при наличии соответствующих прав
 @Composable
 fun TaskCard(
@@ -167,6 +176,7 @@ fun TaskCard(
         )
     }
 }
+
 //Диалоговое окно для редактирования задачи. Позволяет изменить заголовок и описание задачи
 @Composable
 fun EditTaskDialog(

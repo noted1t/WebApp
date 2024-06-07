@@ -11,7 +11,7 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 //Класс с методами для взаимодействия с сервером через HTTP-запросы.
 class KtorRepository(private val httpClient: HttpClient, private val settings: SettingsRepository) {
-    private val baseUrl = "http://localhost:8080"
+    private val baseUrl = "http://localhost:7070"
 //Авторизация пользователя, сохранение ключа авторизации
     suspend fun login(login: LoginObject) : HttpStatusCode {
         val loginUrl = "${baseUrl}/login"
